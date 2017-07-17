@@ -29,6 +29,14 @@
     (setf *standard-prefixes*
           (remove-if (lambda (prefix-prefix) (string= prefix prefix-prefix))
                      *standard-prefixes* :key #'prefix-prefix))))
+
+(defun expand-prefix (pname)
+  (let ((pair (cl-ppcre:split #\: pname)))
+    (concatenate 
+     'string
+     (prefix-iri (is-standard-prefix-p (first pair)))
+     (second pair))))
+
 (defun query-update-prefixes (query &key (prefix T prefix-p) &allow-other-keys)
   "Updates the query unless the :prefix keyword has been set to nil."
   (if (or prefix (not prefix-p))

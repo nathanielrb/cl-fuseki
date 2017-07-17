@@ -63,7 +63,7 @@ The package is exported to a separate file.  You should be able to #'use-package
              :query :long-query
              :update :long-update
              :ask
-             :add-prefix :rm-prefix
+             :add-prefix :rm-prefix :expand-prefix
              :insert :delete
              :*log-queries-p* :with-query-logging :without-query-logging))
   
@@ -404,7 +404,7 @@ Prefixes occur more often than not.  In order to minimize the amount of typing t
 #+end_src
 
 *** Public interface
-We create two user-end functions, one to create the prefix and one to remove the prefix.  The interface is deliberately kept as simple as possible.
+We create three user-end functions, one to create the prefix, one to remove the prefix, and one to expand a pname.  The interface is deliberately kept as simple as possible.
 
 #+name: prefix-support-public
 #+begin_src lisp
@@ -423,9 +423,16 @@ We create two user-end functions, one to create the prefix and one to remove the
       (setf *standard-prefixes*
             (remove-if (lambda (prefix-prefix) (string= prefix prefix-prefix))
                        *standard-prefixes* :key #'prefix-prefix))))
+
+(defun expand-prefix (pname)
+  (let ((pair (cl-ppcre:split #\: pname)))
+    (concatenate 
+     'string
+     (prefix-iri (is-standard-prefix-p (first pair)))
+     (second pair))))
 #+end_src
 
-There are some prefixes which occur all to often, we include them here by default.
+There are some prefixes which occur all too often, we include them here by default.
 #+name: prefix-support-standard-prefixes
 #+begin_src lisp
   (add-prefix "rdf" "http://www.w3.org/1999/02/22-rdf-syntax-ns#")

@@ -8,7 +8,7 @@
            :query :long-query
            :update :long-update
            :ask
-           :add-prefix :rm-prefix
+           :add-prefix :rm-prefix :expand-prefix
            :insert :delete
            :*log-queries-p* :with-query-logging :without-query-logging))
 
